@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 
-import {HttpClientModule} from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 
 import { FormsModule } from '@angular/forms';
 
@@ -50,7 +50,8 @@ import { AccountComponent } from './pages/account/account.component';
 import { AccountBreadcrumbComponent } from './pages/account/account-breadcrumb/account-breadcrumb.component';
 import { AccountProfileComponent } from './pages/account/account-profile/account-profile.component';
 import { AccountWishlistComponent } from './pages/account/account-profile/account-wishlist/account-wishlist.component';
-
+import { ShoppingCartComponent } from './pages/shopping-cart/shopping-cart.component';
+import { CheckoutComponent } from './pages/checkout/checkout.component';
 
 @NgModule({
   declarations: [
@@ -92,7 +93,9 @@ import { AccountWishlistComponent } from './pages/account/account-profile/accoun
     AccountComponent,
     AccountBreadcrumbComponent,
     AccountProfileComponent,
-    AccountWishlistComponent
+    AccountWishlistComponent,
+    ShoppingCartComponent,
+    CheckoutComponent,
   ],
   imports: [
     BrowserModule,
@@ -101,10 +104,10 @@ import { AccountWishlistComponent } from './pages/account/account-profile/accoun
     FormsModule,
     DataTablesModule,
     ConfirmationPopoverModule.forRoot({
-        confirmButtonType:'danger'
-    })
+      confirmButtonType: 'danger',
+    }),
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

@@ -658,8 +658,8 @@ export let Tooltip = {
   },
 };
 
-/*=============================================
-Paypal
+/*================ SECCION ===================
+      Paypal
 =============================================*/
 
 export let Paypal = {
@@ -668,7 +668,7 @@ export let Paypal = {
       paypal
         .Buttons({
           createOrder: function (data, actions) {
-            // This function sets up the details of the transaction, including the amount and line item details.
+            //* This function sets up the details of the transaction, including the amount and line item details.
             return actions.order.create({
               purchase_units: [
                 {
@@ -681,7 +681,7 @@ export let Paypal = {
           },
 
           onApprove: function (data, actions) {
-            // This function captures the funds from the transaction.
+            //* This function captures the funds from the transaction.
             return actions.order.capture().then(function (details) {
               if (details.status == "COMPLETED") {
                 localStorage.setItem("id_payment", details.id);

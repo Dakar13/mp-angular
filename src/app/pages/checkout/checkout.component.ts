@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
-import { Path, Payu, MercadoPago } from '../../config';
+import { Path, MercadoPago } from '../../config';
 import { Sweetalert, DinamicPrice, Paypal } from '../../functions';
 
 import { Router, ActivatedRoute } from '@angular/router';
@@ -249,15 +249,15 @@ export class CheckoutComponent implements OnInit {
       let localTotalPrice = this.totalPrice;
       let localSubTotalPrice = this.subTotalPrice;
       let localActivatedRoute = this.activatedRoute;
-      let localShoppingCart = this.shoppingCart;
-      let localProductsService = this.productsService;
-      let localUser = this.user;
-      let localDialCode = this.dialCode;
-      let localAddInfo = this.addInfo;
-      let localOrdersService = this.ordersService;
-      let localValidateCoupon = this.validateCoupon;
-      let localPaymentMethod = this.paymentMethod;
-      let localSalesService = this.salesService;
+      // let localShoppingCart = this.shoppingCart;
+      // let localProductsService = this.productsService;
+      // let localUser = this.user;
+      // let localDialCode = this.dialCode;
+      // let localAddInfo = this.addInfo;
+      // let localOrdersService = this.ordersService;
+      // let localValidateCoupon = this.validateCoupon;
+      // let localPaymentMethod = this.paymentMethod;
+      // let localSalesService = this.salesService;
 
       /*=============================================
 			Mostrar lista del carrito de compras con los precios definitivos
@@ -302,163 +302,6 @@ export class CheckoutComponent implements OnInit {
         $('.totalCheckout').html(`$${total.toFixed(2)}`);
 
         localTotalPrice.push(total.toFixed(2));
-
-        /*=============================================
-				Validar la compra de PAYU
-				=============================================*/
-
-        if (localActivatedRoute.snapshot.queryParams['transactionState'] == 4) {
-          let totalRender = 0;
-
-          /*=============================================
-					Tomamos la información de la venta
-					=============================================*/
-
-          localShoppingCart.forEach((product, index) => {
-            totalRender++;
-
-            /*=============================================
-						Enviar actualización de cantidad de producto vendido a la base de datos
-						=============================================*/
-
-            localProductsService
-              .getFilterData('url', product.url)
-              .subscribe((resp) => {
-                for (const i in resp) {
-                  let id = Object.keys(resp).toString();
-
-                  let value = {
-                    sales: Number(resp[i].sales) + Number(product.quantity),
-                  };
-
-                  localProductsService
-                    .patchDataAuth(id, value, localStorage.getItem('idToken'))
-                    .subscribe((resp) => {});
-                }
-              });
-
-            /*=============================================
-						Crear el proceso de entrega de la venta
-						=============================================*/
-
-            let moment = Math.floor(Number(product.delivery_time) / 2);
-
-            let sentDate = new Date();
-            sentDate.setDate(sentDate.getDate() + moment);
-
-            let deliveredDate = new Date();
-            deliveredDate.setDate(
-              deliveredDate.getDate() + Number(product.delivery_time)
-            );
-
-            let proccess = [
-              {
-                stage: 'reviewed',
-                status: 'ok',
-                comment:
-                  'We have received your order, we start delivery process',
-                date: new Date(),
-              },
-
-              {
-                stage: 'sent',
-                status: 'pending',
-                comment: '',
-                date: sentDate,
-              },
-              {
-                stage: 'delivered',
-                status: 'pending',
-                comment: '',
-                date: deliveredDate,
-              },
-            ];
-
-            /*=============================================
-						Crear orden de venta en la base de datos
-						=============================================*/
-
-            let body = {
-              store: product.store,
-              user: localUser.username,
-              product: product.name,
-              url: product.url,
-              image: product.image,
-              category: product.category,
-              details: product.details,
-              quantity: product.quantity,
-              price: localSubTotalPrice[index],
-              email: localUser.email,
-              country: localUser.country,
-              city: localUser.city,
-              phone: `${localDialCode}-${localUser.phone}`,
-              address: localUser.address,
-              info: localAddInfo,
-              process: JSON.stringify(proccess),
-              status: 'pending',
-            };
-
-            localOrdersService
-              .registerDatabase(body, localStorage.getItem('idToken'))
-              .subscribe((resp) => {
-                if (resp['name'] != '') {
-                  /*=============================================
-								Separamos la comisión del Marketplace y el pago a la tienda del precio total de cada producto
-								=============================================*/
-
-                  let commision = 0;
-                  let unitPrice = 0;
-
-                  if (localValidateCoupon) {
-                    commision = Number(localSubTotalPrice[index]) * 0.05;
-                    unitPrice = Number(localSubTotalPrice[index]) * 0.95;
-                  } else {
-                    commision = Number(localSubTotalPrice[index]) * 0.25;
-                    unitPrice = Number(localSubTotalPrice[index]) * 0.75;
-                  }
-
-                  /*=============================================
-								Enviar información de la venta a la base de datos
-								=============================================*/
-
-                  let body = {
-                    id_order: resp['name'],
-                    client: localUser.username,
-                    product: product.name,
-                    url: product.url,
-                    quantity: product.quantity,
-                    unit_price: unitPrice.toFixed(2),
-                    commision: commision.toFixed(2),
-                    total: localSubTotalPrice[index],
-                    payment_method: 'Payu',
-                    id_payment:
-                      localActivatedRoute.snapshot.queryParams['transactionId'],
-                    date: new Date(),
-                    status: 'pending',
-                  };
-
-                  localSalesService
-                    .registerDatabase(body, localStorage.getItem('idToken'))
-                    .subscribe((resp) => {});
-                }
-              });
-          });
-
-          /*=============================================
-					Preguntamos cuando haya finalizado el proceso de guardar todo en la base de datos
-					=============================================*/
-
-          if (totalRender == localShoppingCart.length) {
-            localStorage.removeItem('list');
-            Cookies.remove('coupon');
-
-            Sweetalert.fnc(
-              'success',
-              'The purchase was successful',
-              'account/my-shopping'
-            );
-          }
-        }
       }, totalShoppingCart * 500);
     }
   }
@@ -649,7 +492,7 @@ export class CheckoutComponent implements OnInit {
             Sweetalert.fnc(
               'success',
               'The purchase was successful',
-              'account/my-shopping'
+              'account/my-shopping' /* redireccionamos a my-shopping  NOTE */
             );
           }
         } else {
@@ -660,82 +503,12 @@ export class CheckoutComponent implements OnInit {
           );
         }
       });
-    } else if (f.value.paymentMethod == 'payu') {
-      /*=============================================
-			        NOTE Checkout con Payu
-			=============================================*/
-
-      let action = Payu.action;
-      let merchantId = Payu.merchantId;
-      let accountId = Payu.accountId;
-      let responseUrl = Payu.responseUrl;
-      let confirmationUrl = Payu.confirmationUrl;
-      let apiKey = Payu.apiKey;
-      let test = Payu.test;
-
-      /*=============================================
-			Capturar la descripción
-			=============================================*/
-
-      let description = '';
-
-      this.shoppingCart.forEach((product) => {
-        description += `${product.name} x${product.quantity}, `;
-      });
-
-      description = description.slice(0, -2);
-
-      /*=============================================
-			Creamos el código de referencia
-			=============================================*/
-
-      let referenceCode = Math.ceil(Math.random() * 1000000);
-
-      /*=============================================
-			Creamos la firma de Payu
-			=============================================*/
-
-      let signature = Md5.init(
-        `${apiKey}~${merchantId}~${referenceCode}~${this.totalPrice[0]}~USD`
-      );
-
-      /*=============================================
-			Formulario web checkout de Payu
-			=============================================*/
-
-      let formPayu = `
-
-				<img src="assets/img/payment-method/payu_logo.png" style="width:100px" />
-
-				 <form method="post" action="${action}">
-				  <input name="merchantId"    type="hidden"  value="${merchantId}"   >
-				  <input name="accountId"     type="hidden"  value="${accountId}" >
-				  <input name="description"   type="hidden"  value="${description}"  >
-				  <input name="referenceCode" type="hidden"  value="${referenceCode}" >
-				  <input name="amount"        type="hidden"  value="${this.totalPrice[0]}"   >
-				  <input name="tax"           type="hidden"  value="0"  >
-				  <input name="taxReturnBase" type="hidden"  value="0" >
-				  <input name="currency"      type="hidden"  value="USD" >
-				  <input name="signature"     type="hidden"  value="${signature}"  >
-				  <input name="test"          type="hidden"  value="${test}" >
-				  <input name="buyerEmail"    type="hidden"  value="${this.user.email}" >
-				  <input name="responseUrl"    type="hidden"  value="${responseUrl}" >
-				  <input name="confirmationUrl"    type="hidden"  value="${confirmationUrl}" >
-				  <input name="Submit" type="submit" class="ps-btn p-0 px-5"  value="Next" >
-				</form>`;
-
-      /*=============================================
-			Listado de tarjetas de crédito
-			=============================================*/
-
-      //https://www.mercadopago.com.co/developers/es/guides/payments/web-tokenize-checkout/testing/
-
-      /*=============================================
-			Sacar el botón de Payu en una alerta suave
-			=============================================*/
-
-      Sweetalert.fnc('html', formPayu, null);
-    } else if (f.value.paymentMethod == 'mercado-pago') {
+    }
+    /*=============================================
+    NOTE Listado de tarjetas de crédito
+    =============================================*/
+    //https://www.mercadopago.com.co/developers/es/guides/payments/web-tokenize-checkout/testing/
+    else if (f.value.paymentMethod == 'mercado-pago') {
       /*=============================================
 			        NOTE Checkout con Mercado Pago
 			=============================================*/
@@ -779,7 +552,7 @@ export class CheckoutComponent implements OnInit {
         Cookies.set('_e', email, { expires: 1 });
 
         window.open(
-          `http://localhost/marketplace-checkout/src/mercadopago/index.php?_x=${Md5.init(
+          `http://localhost/mp-angular/src/mercadopago/index.php?_x=${Md5.init(
             localTotalPrice
           )}`,
           '_blank',
@@ -825,7 +598,7 @@ export class CheckoutComponent implements OnInit {
         ) {
           let totalRender = 0;
 
-          /*=============================================
+          /*=============SECCION DE VENTA=====================
 					Tomamos la información de la venta
 					=============================================*/
 
@@ -975,7 +748,7 @@ export class CheckoutComponent implements OnInit {
             Sweetalert.fnc(
               'success',
               'The purchase was successful',
-              'account/my-shopping'
+              'account/my-shopping' /* redirecionamos a my-shopping NOTE */
             );
           }
         }

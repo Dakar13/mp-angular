@@ -23,7 +23,7 @@ Checkout
       <h1>Checkout</h1>
     </div>
 
-    <!-- Seccion informacion del cliente -->
+    <!--! Seccion informacion del cliente -->
 
     <div class="ps-section__content">
       <form (ngSubmit)="onSubmit(f)" #f="ngForm" class="ps-form--checkout">
@@ -203,7 +203,7 @@ Checkout
             </div>
           </div>
 
-          <!-- Seccion lista de compras -->
+          <!--! Seccion lista de compras -->
 
           <div class="col-xl-5 col-lg-4 col-sm-12">
             <div class="ps-form__total">
@@ -294,29 +294,6 @@ Checkout
                       <span
                         ><img
                           src="{{ path }}img/payment-method/paypal.jpg"
-                          class="w-50" /></span
-                    ></label>
-                  </div>
-                </div>
-
-                <!--! Metodo Payu -->
-                <div class="form-group">
-                  <div class="ps-radio">
-                    <input
-                      class="form-control"
-                      type="radio"
-                      id="pay-payu"
-                      name="paymentMethod"
-                      [(ngModel)]="paymentMethod"
-                      value="payu"
-                      required
-                    />
-
-                    <label for="pay-payu"
-                      >Pay with Payu?
-                      <span
-                        ><img
-                          src="{{ path }}img/payment-method/payu.jpg"
                           class="w-50" /></span
                     ></label>
                   </div>

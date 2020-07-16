@@ -52,6 +52,7 @@ import { AccountProfileComponent } from './pages/account/account-profile/account
 import { AccountWishlistComponent } from './pages/account/account-profile/account-wishlist/account-wishlist.component';
 import { ShoppingCartComponent } from './pages/shopping-cart/shopping-cart.component';
 import { CheckoutComponent } from './pages/checkout/checkout.component';
+import { AccountMyShoppingComponent } from './pages/account/account-profile/account-my-shopping/account-my-shopping.component';
 
 @NgModule({
   declarations: [
@@ -96,6 +97,7 @@ import { CheckoutComponent } from './pages/checkout/checkout.component';
     AccountWishlistComponent,
     ShoppingCartComponent,
     CheckoutComponent,
+    AccountMyShoppingComponent,
   ],
   imports: [
     BrowserModule,

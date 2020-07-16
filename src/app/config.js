@@ -104,3 +104,18 @@ export let Server = {
   url:
     "http://localhost/mp-angular/src/assets/img/index.php?key=AIzaSyAEjKuE6rV96zwlmLO7JZrg9Bb5qWIjRDw",
 };
+
+/*=============================================
+Exportamos las credenciales de MERCADO PAGO
+=============================================*/
+
+export let MercadoPago = {
+  //Sandbox
+  public_key: "TEST-b9ce7db8-375d-4a56-8c94-1bcbcfb99e14",
+  access_token:
+    "TEST-779059680580923-070123-b996795e2c2e7ff42e614428e58f12ba-24180870",
+
+  //Live /* ! Agregar solo para produccion */
+  // public_key: "APP_USR-22bdfc7b-81fc-49b4-867d-0aa098091336",
+  // access_token:"APP_USR-779059680580923-070123-f8aacbe71e0e20f8461d8c671bb8485b-24180870"
+};

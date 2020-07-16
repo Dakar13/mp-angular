@@ -3,17 +3,22 @@ import { HttpClient } from '@angular/common/http';
 import { Api } from '../config';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SalesService {
+  private api: string = Api.url;
 
-	private api:string = Api.url;
+  constructor(private http: HttpClient) {}
 
-  	constructor(private http:HttpClient) { }
+  getData() {
+    return this.http.get(`${this.api}sales.json`);
+  }
 
-	getData(){
+  /*=============================================
+	Registro en Firebase Database
+	=============================================*/
 
-		return this.http.get(`${this.api}sales.json`);
-
-	}
+  registerDatabase(body: object, idToken: string) {
+    return this.http.post(`${this.api}/sales.json?auth=${idToken}`, body);
+  }
 }
